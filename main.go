@@ -11,11 +11,11 @@ import (
 
 func handleFunc(response http.ResponseWriter, request *http.Request) {
 	url := request.URL.Path
-	if strings.Contains(url, "users") {
+	if strings.Contains(url, "/users") {
 		controllers.UserRequests(response, request)
 		return
-	} else if strings.Contains(url, "post") {
-		controllers.UserRequests(response, request)
+	} else if strings.Contains(url, "/posts") {
+		controllers.PostRequests(response, request)
 		return
 	} else {
 		fmt.Fprintf(response, "url")
