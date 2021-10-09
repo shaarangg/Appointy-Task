@@ -77,6 +77,7 @@ func PostRequests(response http.ResponseWriter, request *http.Request) {
 		response.Header().Add("content-type", "application/json")
 		var post models.Post
 		json.NewDecoder(request.Body).Decode(&post)
+		fmt.Println(post.Caption, post.Image_url, post.Uid)
 		date := time.Now()
 		post.Timestamp = date.String()
 		collection := DB.Database("appointy").Collection("post")
@@ -95,7 +96,7 @@ func AllPostRequests(response http.ResponseWriter, request *http.Request) {
 	case "GET":
 		fmt.Println("GET req at users/posts")
 		response.Header().Add("content-type", "application/json")
-		userID := strings.TrimPrefix(request.URL.Path, "/posts/users/")
+		userID := strings.TrimPrefix(request.URL.Path, "/users/posts/")
 		id, _ := primitive.ObjectIDFromHex(userID)
 		var posts []models.Post
 		collection := DB.Database("appointy").Collection("post")
