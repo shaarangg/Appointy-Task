@@ -53,9 +53,7 @@ func PostRequests(response http.ResponseWriter, request *http.Request) {
 		fmt.Println("GET req at post")
 		response.Header().Add("content-type", "application/json")
 		postID := strings.TrimPrefix(request.URL.Path, "/posts/")
-		fmt.Println(postID)
 		id, _ := primitive.ObjectIDFromHex(postID)
-		fmt.Println(id)
 		var post models.Post
 		collection := DB.Database("appointy").Collection("post")
 		var ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
@@ -73,7 +71,6 @@ func PostRequests(response http.ResponseWriter, request *http.Request) {
 		json.NewDecoder(request.Body).Decode(&post)
 		date := time.Now()
 		post.Timestamp = date.String()
-		fmt.Println(post.Uid, post.Caption, post.Timestamp)
 		collection := DB.Database("appointy").Collection("post")
 		var ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
