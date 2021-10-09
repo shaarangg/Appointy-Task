@@ -4,18 +4,28 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/shaarangg/Appointy-Task/controllers"
 )
 
-func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Homepage Endpoint hit")
+func handleFunc(response http.ResponseWriter, request *http.Request) {
+	url := request.URL.Path
+	if strings.Contains(url, "users") {
+		controllers.UserRequests(response, request)
+		return
+	} else if strings.Contains(url, "post") {
+		controllers.UserRequests(response, request)
+		return
+	} else {
+		fmt.Fprintf(response, "url")
+	}
 }
 func handleRequests() {
-	http.HandleFunc("/", homePage)
+	http.HandleFunc("/", handleFunc)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 func main() {
-	// handleRequests()
-	database := controllers.Dbinit()
+	controllers.Dbinit()
+	handleRequests()
 }

@@ -11,24 +11,19 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func Dbinit() *mongo.Database {
+var DB *mongo.Client
 
-	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
+func Dbinit() {
+	var ctx, cancel = context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
-	err = client.Connect(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		log.Fatal(err)
 	}
+	DB = client
 	// fmt.Println(models.Name)
-	database := client.Database("appointy")
-	return database
 }

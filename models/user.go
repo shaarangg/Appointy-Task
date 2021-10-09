@@ -1,9 +1,10 @@
 package models
 
-type User struct {
-	Name     string `bson:"name`
-	Email    string `bson:"email`
-	Password string `bson:"password`
-}
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
-var Name = "shaarang"
+type User struct {
+	ID       primitive.ObjectID `bson:"_id,omitempty"`
+	Name     string             `bson:"name,omitempty"`
+	Email    string             `bson:"email,omitempty"`
+	Password string             `bson:"password,omitempty"`
+}
