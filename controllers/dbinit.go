@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func Dbinit() {
+func Dbinit() *mongo.Database {
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
@@ -28,7 +28,7 @@ func Dbinit() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// database := client.Database("appointy")
-	// userCollection := database.Collection("user")
-	// postCollection := database.Collection("post")
+	// fmt.Println(models.Name)
+	database := client.Database("appointy")
+	return database
 }

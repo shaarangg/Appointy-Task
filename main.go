@@ -16,6 +16,6 @@ func handleRequests() {
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 func main() {
-	handleRequests()
-	controllers.Dbinit()
+	// handleRequests()
+	database := controllers.Dbinit()
 }
