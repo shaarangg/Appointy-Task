@@ -29,6 +29,7 @@ func UserRequests(response http.ResponseWriter, request *http.Request) {
 		if err != nil {
 			response.WriteHeader(http.StatusInternalServerError)
 			response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+			return
 		}
 		json.NewEncoder(response).Encode(user)
 	case "POST":
@@ -47,6 +48,7 @@ func UserRequests(response http.ResponseWriter, request *http.Request) {
 		response.Write([]byte(`{"message": "not found"}`))
 	}
 }
+
 func PostRequests(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case "GET":
@@ -62,6 +64,7 @@ func PostRequests(response http.ResponseWriter, request *http.Request) {
 		if err != nil {
 			response.WriteHeader(http.StatusInternalServerError)
 			response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+			return
 		}
 		json.NewEncoder(response).Encode(post)
 	case "POST":
@@ -76,6 +79,41 @@ func PostRequests(response http.ResponseWriter, request *http.Request) {
 		defer cancel()
 		result, _ := collection.InsertOne(ctx, post)
 		json.NewEncoder(response).Encode(result)
+	default:
+		response.WriteHeader(http.StatusNotFound)
+		response.Write([]byte(`{"message": "not found"}`))
+	}
+}
+
+func AllPostRequests(response http.ResponseWriter, request *http.Request) {
+	switch request.Method {
+	case "GET":
+		fmt.Println("GET req at users/posts")
+		response.Header().Add("content-type", "application/json")
+		userID := strings.TrimPrefix(request.URL.Path, "/posts/users/")
+		id, _ := primitive.ObjectIDFromHex(userID)
+		var posts []models.Post
+		collection := DB.Database("appointy").Collection("post")
+		var ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		cursor, err := collection.Find(ctx, models.Post{Uid: id})
+		if err != nil {
+			response.WriteHeader(http.StatusInternalServerError)
+			response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+			return
+		}
+		defer cursor.Close(ctx)
+		for cursor.Next(ctx) {
+			var post models.Post
+			cursor.Decode(&post)
+			posts = append(posts, post)
+		}
+		if err != nil {
+			response.WriteHeader(http.StatusInternalServerError)
+			response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+			return
+		}
+		json.NewEncoder(response).Encode(posts)
 	default:
 		response.WriteHeader(http.StatusNotFound)
 		response.Write([]byte(`{"message": "not found"}`))
