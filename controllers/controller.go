@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -37,6 +38,10 @@ func UserRequests(response http.ResponseWriter, request *http.Request) {
 		response.Header().Add("content-type", "application/json")
 		var user models.User
 		json.NewDecoder(request.Body).Decode(&user)
+		h := sha256.New()
+		h.Write([]byte(user.Password))
+		sum := h.Sum(nil)
+		user.Password = sum
 		fmt.Println(user.Name, user.Email, user.Password)
 		collection := DB.Database("appointy").Collection("user")
 		var ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)

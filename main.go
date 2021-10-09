@@ -28,6 +28,7 @@ func handleRequests() {
 	http.HandleFunc("/", handleFunc)
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
+
 func main() {
 	controllers.Dbinit()
 	handleRequests()
