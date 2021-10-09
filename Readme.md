@@ -1,4 +1,4 @@
-# motorq-assignment
+# Appointy-Instagram-clone-API
 
 # About The Project
 This project was given as a Task for the 2 month internship program at Appointy. The project is built using go and MongoDB.
